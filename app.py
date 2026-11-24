@@ -136,7 +136,7 @@ def get_transformer_prediction(news_text):
             dim=-1
         )[0]
 
-    prediction = int(
+    raw_prediction = int(
         torch.argmax(
             probabilities
         ).item()
@@ -144,10 +144,15 @@ def get_transformer_prediction(news_text):
 
     confidence = float(
         probabilities[
-            prediction
+            raw_prediction
         ].item()
         * 100
     )
+
+    # Convert DistilBERT labels to the project's convention:
+    # 0 = Fake, 1 = Real
+    # DistilBERT checkpoint: 0 = Real, 1 = Fake
+    prediction = 1 - raw_prediction
 
     return (
         prediction,

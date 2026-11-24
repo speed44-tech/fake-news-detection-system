@@ -138,10 +138,15 @@ with torch.no_grad():
 
         outputs = transformer(**encoded)
 
-        predictions = torch.argmax(
+        raw_predictions = torch.argmax(
             outputs.logits,
             dim=1
         ).cpu().tolist()
+
+        # Convert DistilBERT labels to project labels
+        # DistilBERT: 0 = Real, 1 = Fake
+        # Project: 0 = Fake, 1 = Real
+        predictions = raw_predictions
 
         transformer_predictions.extend(predictions)
 
